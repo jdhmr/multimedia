@@ -36,6 +36,9 @@ export const HOC = (Comp: FC) => {
               <NavLink to="/home">
                 <div>Home</div>
               </NavLink>
+              <NavLink to="/post">
+                <div>Post</div>
+              </NavLink>
               <NavLink to="/profile">
                 <div className="mt-5">My profile</div>
               </NavLink>
@@ -57,7 +60,7 @@ export const HOC = (Comp: FC) => {
                       style={{ width: "40px", borderRadius: "50%" }}
                     />
                   </span>
-                  {loginuser.obj?.userName}
+                  {loginuser?.obj?.userName}
                 </p>
               </Link>
 

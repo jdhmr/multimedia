@@ -11,6 +11,7 @@ import {
 } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { addPost, deletePost } from "../Store/Slices/User";
+import { HOC } from "./HOC";
 
 const Post = () => {
   let state = useSelector((state: any) => state.post);
@@ -35,15 +36,9 @@ const Post = () => {
     } else {
       setpostobj({ ...postobj, [e.target.name]: e.target.value });
     }
-    // setblank({
-    //   postimg: "",
-    //   description: "",
-    //   id: postId,
-    //   userLoninId: "",
-    // });
   };
 
-  const saveData = (postobj: {}) => {   
+  const saveData = (postobj: {}) => {
     console.log(postobj);
     dispatch(addPost(postobj));
     setpostobj({
@@ -52,6 +47,13 @@ const Post = () => {
       id: postId,
       userLoninId: userId,
     });
+  };
+
+  const deletePosts = (delId: any) => {
+    if (window.confirm("Are you sure !! you want to delete user")) {
+      console.log("delId", delId);
+      dispatch(deletePost(delId));
+    }
   };
 
   const toBase64 = (file: any) =>
@@ -65,6 +67,8 @@ const Post = () => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  console.log();
+
   return (
     <>
       <Button className="ms-3" variant="primary" onClick={handleShow}>
@@ -121,24 +125,34 @@ const Post = () => {
       </Modal>
 
       {state.map((x: any, i: number) => {
-        return (
-          <Card style={{ width: "18rem" }}>
-            <Card.Img variant="top" src={x.postimg} />
-            <Card.Body>
-              <Card.Text>{x.description}</Card.Text>
-            </Card.Body>
-            <button
-              type="button"
-              className="btn btn-danger"
-              onClick={() => deletePost(postobj.id)}
-            >
-              Delete post
-            </button>
-          </Card>
-        );
+        if (userId === x.userLoninId) {
+          return (
+            <Card style={{ width: "18rem" }}>
+              <Card.Img variant="top" src={x.postimg} />
+              <Card.Body>
+                <div className="d-flex justify-content-between mb-4">
+                  <button type="button" className="btn btn-info">
+                    Like
+                  </button>
+                  <input type="text" placeholder="comment" className="w-75" />
+                </div>
+                <Card.Text>{x.description}</Card.Text>
+              </Card.Body>
+              <button
+                type="button"
+                className="btn btn-danger"
+                onClick={() => deletePosts(postobj.id)}
+              >
+                Delete post
+              </button>
+            </Card>
+          );
+        } else {
+          return null;
+        }
       })}
     </>
   );
 };
 
-export default Post;
+export default HOC(Post);

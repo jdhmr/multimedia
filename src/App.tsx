@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 import OnbordingPage from "./Componants/OnbordingPage";
 import MyProfile from "./Componants/MyProfile";
 import { useDispatch, useSelector } from "react-redux";
-import { addUser } from "./Store/Slices/User";
+import { addPost, addUser } from "./Store/Slices/User";
 import Post from "./Componants/Post";
 
 export let loginContext = createContext<{
@@ -24,6 +24,8 @@ function App() {
   const dispatch = useDispatch();
   const users = useSelector((state: any) => state.user);
   const userData = JSON.parse(localStorage.getItem("user") as any);
+  let posts = useSelector((state: any) => state.post);
+  const postData = JSON.parse(localStorage.getItem("post") as any);
 
   const checkInActivity = () => {
     const expireTime = JSON.parse(localStorage.getItem("expireTime") as string);
@@ -47,6 +49,14 @@ function App() {
     }
   }, []);
 
+  useEffect(() => {
+    if (!!posts && postData) {
+      postData?.map((item: any) => {
+        dispatch(addPost(item));
+      });
+    }
+  }, []);
+
   return (
     <>
       <loginContext.Provider value={{ login, setLogin }}>
@@ -56,8 +66,8 @@ function App() {
               <Route path="/" element={<Navigate to="/home" />} />
               <Route path="/home" element={<Home />}>
                 <Route path="onbord" element={<OnbordingPage />} />
-                <Route path="/home" element={<Post />} />
               </Route>
+              <Route path="/post" element={<Post />} />
               <Route path="/profile" element={<MyProfile />} />
               <Route path="*" element={<Navigate to="/home" />} />
             </Routes>

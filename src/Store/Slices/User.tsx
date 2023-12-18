@@ -25,6 +25,7 @@ const UsersPost = createSlice({
       localStorage.setItem("post", JSON.stringify(state));
     },
     deletePost(state, action) {
+      // state.splice(action.payload, 1);
       let deleteData = state.filter((x: any) => x.id != action.payload);
       state = deleteData;
       localStorage.setItem("post", JSON.stringify(state));
