@@ -5,28 +5,20 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { RegisterPage } from "./Componants/RegisterPage";
 import Home from "./Componants/Home";
 import { LoginPage } from "./Componants/LoginPage";
-import Swal from "sweetalert2";
 import OnbordingPage from "./Componants/OnbordingPage";
 import MyProfile from "./Componants/MyProfile";
-import { useDispatch, useSelector } from "react-redux";
-import { addPost, addUser } from "./Store/Slices/User";
 import Post from "./Componants/Post";
 
 export let loginContext = createContext<{
   setLogin: Dispatch<any>;
   login: any;
-}>({ login: {}, setLogin: () => {} });
+}>({ login: {}, setLogin: () => { } });
 
 function App() {
   const [login, setLogin] = useState(
     JSON.parse(localStorage.getItem("isLogin") as string)
   );
-  const dispatch = useDispatch();
-  const users = useSelector((state: any) => state.user);
-  const userData = JSON.parse(localStorage.getItem("user") as any);
-  let posts = useSelector((state: any) => state.post);
-  const postData = JSON.parse(localStorage.getItem("post") as any);
-
+ 
   const checkInActivity = () => {
     const expireTime = JSON.parse(localStorage.getItem("expireTime") as string);
     if (expireTime < Date.now()) {
@@ -40,22 +32,6 @@ function App() {
   useEffect(() => {
     checkInActivity();
   });
-
-  useEffect(() => {
-    if (!!users && userData) {
-      userData?.map((item: any) => {
-        dispatch(addUser(item));
-      });
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!!posts && postData) {
-      postData?.map((item: any) => {
-        dispatch(addPost(item));
-      });
-    }
-  }, []);
 
   return (
     <>

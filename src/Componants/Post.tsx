@@ -14,21 +14,29 @@ import { addPost, deletePost } from "../Store/Slices/User";
 import { HOC } from "./HOC";
 
 const Post = () => {
-  let state = useSelector((state: any) => state.post);
   const userId = JSON.parse(localStorage.getItem("loginuserId") as any);
+  let userData = JSON.parse(localStorage.getItem("user") as string);
+  let findUser = userData.find((x: any) => x.id === userId);
+
+  let state = useSelector((state: any) => state.post);
   const dispatch = useDispatch();
   let postId = uuid4();
+   // let date = new Date();
   const [postobj, setpostobj] = useState({
     postimg: "",
     description: "",
     id: postId,
     userLoninId: userId,
+    userImg: findUser?.obj?.profile,
+    userName: findUser?.name,
+  });
+  let [errorMsg, seterrorMsg] = useState({
+    postimg: "",
+    description: "",
   });
 
   const getValue = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.type == "file") {
-      console.log(e.target.files?.[0]);
-
       setpostobj({
         ...postobj,
         [e.target.name]: await toBase64(e.target.files?.[0]),
@@ -38,21 +46,28 @@ const Post = () => {
     }
   };
 
-  const saveData = (postobj: {}) => {
-    console.log(postobj);
-    dispatch(addPost(postobj));
-    setpostobj({
+  const saveData = (postobj: any) => {
+    const errMsg = {
       postimg: "",
       description: "",
-      id: postId,
-      userLoninId: userId,
-    });
-  };
+    };
 
-  const deletePosts = (delId: any) => {
-    if (window.confirm("Are you sure !! you want to delete user")) {
-      console.log("delId", delId);
-      dispatch(deletePost(delId));
+    if (!postobj.postimg.trim()) {
+      errMsg.postimg = "Post img is required";
+    }
+
+    seterrorMsg(errMsg);
+    let len = Object.values(errMsg).filter((x) => x != "");
+    if (len.length === 0) {
+      dispatch(addPost(postobj));
+      setpostobj({
+        postimg: "",
+        description: "",
+        id: postId,
+        userLoninId: userId,
+        userImg: findUser.obj.profile,
+        userName: findUser.name,
+      });
     }
   };
 
@@ -67,7 +82,6 @@ const Post = () => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  console.log();
 
   return (
     <>
@@ -92,6 +106,7 @@ const Post = () => {
                   className="mt-3 me-5"
                   style={{ width: "100px" }}
                 />
+                {errorMsg.postimg && <span>{errorMsg.postimg}</span>}
               </Col>
             </Form.Group>
 
@@ -123,34 +138,6 @@ const Post = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-
-      {state.map((x: any, i: number) => {
-        if (userId === x.userLoninId) {
-          return (
-            <Card style={{ width: "18rem" }}>
-              <Card.Img variant="top" src={x.postimg} />
-              <Card.Body>
-                <div className="d-flex justify-content-between mb-4">
-                  <button type="button" className="btn btn-info">
-                    Like
-                  </button>
-                  <input type="text" placeholder="comment" className="w-75" />
-                </div>
-                <Card.Text>{x.description}</Card.Text>
-              </Card.Body>
-              <button
-                type="button"
-                className="btn btn-danger"
-                onClick={() => deletePosts(postobj.id)}
-              >
-                Delete post
-              </button>
-            </Card>
-          );
-        } else {
-          return null;
-        }
-      })}
     </>
   );
 };

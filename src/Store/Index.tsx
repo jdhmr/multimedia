@@ -1,12 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-// import { OnbordingData, Users } from "./Slices/User";
-import { Users, UsersPost } from "./Slices/User";
- 
- const store = configureStore({
-    reducer : {
-        user : Users.reducer,
-        post : UsersPost.reducer
-    }
- });
+import { Users, UsersPost, likeComment } from "./Slices/User";
 
- export default store;
+const store = configureStore({
+  reducer: {
+    user: Users.reducer,
+    post: UsersPost.reducer,
+    likeComment: likeComment.reducer,
+  },
+});
+
+export default store;

@@ -17,18 +17,19 @@ export const RegisterPage = () => {
     id: userId,
   });
   let [blank, setblank] = useState({});
-
-  const getValue = (e: ChangeEvent<HTMLInputElement>) => {
-    setobj({ ...obj, [e.target.name]: e.target.value });
-    setblank({ ...blank });
-  };
-
   let [errorMsg, seterrorMsg] = useState({
     name: "",
     email: "",
     password: "",
     cpassword: "",
   });
+
+  const getValue = (e: ChangeEvent<HTMLInputElement>) => {
+    setobj({ ...obj, [e.target.name]: e.target.value });
+    setblank({ ...blank });
+  };
+
+  
 
   const navigate = useNavigate();
 

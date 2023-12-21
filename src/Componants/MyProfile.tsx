@@ -1,14 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Card } from "react-bootstrap";
 import { HOC } from "./HOC";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { deleteUser } from "../Store/Slices/User";
+import { deletePost, deleteUser } from "../Store/Slices/User";
 import { loginContext } from "../App";
 
 const MyProfile = () => {
   const dispatch = useDispatch();
-
+  let state = useSelector((state: any) => state.post);
   const [loginuser, setLoginuser] = useState<any>({});
   const userId = JSON.parse(localStorage.getItem("loginuserId") as any);
   let userData = JSON.parse(localStorage.getItem("user") as string);
@@ -28,13 +28,20 @@ const MyProfile = () => {
       localStorage.setItem("isLogin", JSON.stringify(false));
       login.setLogin(false);
       localStorage.removeItem("loginuserId");
+
       localStorage.removeItem("expireTime");
+    }
+  };
+
+  const deletePosts = (delId: any) => {
+    if (window.confirm("Are you sure !! you want to delete user")) {
+      dispatch(deletePost(delId));
     }
   };
 
   return (
     <>
-      <Card style={{ width: "18rem" }} className="mt-5 ms-5">
+      <Card style={{ width: "18rem" }} className="mt-5 mx-auto">
         <Card.Body>
           <Card.Title>Your profile</Card.Title>
           <Card.Text>
@@ -63,6 +70,29 @@ const MyProfile = () => {
           </Card.Text>
         </Card.Body>
       </Card>
+
+     
+      {state.map((x: any, i: number) => {
+        if (userId === x.userLoninId) {
+          return (
+            <Card style={{ width: "21rem" }} className="mt-5 mx-auto">
+              <Card.Img variant="top" src={x.postimg} />
+              <Card.Body>
+                <Card.Text>{x.description}</Card.Text>
+              </Card.Body>
+              <button
+                type="button"
+                className="btn btn-danger"
+                onClick={() => deletePosts(x.id)}
+              >
+                Delete post
+              </button>
+            </Card>
+          );
+        } else {
+          return null;
+        }
+      })}
     </>
   );
 };
