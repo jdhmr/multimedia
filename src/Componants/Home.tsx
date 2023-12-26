@@ -1,10 +1,11 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { useRef } from "react";
 import { HOC } from "./HOC";
 import { Outlet } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Card, Form } from "react-bootstrap";
 import { AiFillHeart } from "react-icons/ai";
 import { CiHeart } from "react-icons/ci";
+import { IoClose } from "react-icons/io5";
 import {
   addComment,
   addLike,
@@ -32,14 +33,29 @@ const Home = () => {
     else dispatch(addLike({ id: v4(), postId, userId }));
   };
 
+  const inputRef = useRef<any>({
+    value: "",
+  });
+
   const comentPost = (postId: any) => {
+    const inputValue = inputRef.current.value;
+    let comment = likeComment?.find(
+      (x: any) =>
+        x.type === "coment" && x.userId === userId && x.postId === postId
+    );
+
+    if (!comment)
+      dispatch(addComment({ id: v4(), userId, postId, inputValue }));
+    inputRef.current.value = "";
+  };
+
+  const deleteComent = (postId: any) => {
     let comment = likeComment?.find(
       (x: any) =>
         x.type === "coment" && x.userId === userId && x.postId === postId
     );
 
     if (comment) dispatch(deleteComment(comment.id));
-    else dispatch(addComment({ id: v4(), postId, userId }));
   };
 
   return (
@@ -62,7 +78,9 @@ const Home = () => {
                 <Card.Body>
                   <div className="d-flex justify-content-between align-items-center">
                     <div>
-                      {likeComment.find((y: any) => y.postId === x.id) ? (
+                      {likeComment.find(
+                        (y: any) => y.postId === x.id && y.type == "like"
+                      ) ? (
                         <AiFillHeart
                           size={30}
                           onClick={() => likePost(x?.id)}
@@ -73,25 +91,40 @@ const Home = () => {
                     </div>
 
                     <div className="ms-2">
-                      {likeComment.filter((y: any) => y.postId === x.id).length}
+                      {
+                        likeComment.filter(
+                          (y: any) => y.postId === x.id && y.type == "like"
+                        ).length
+                      }
                     </div>
 
-                    <Form className="ms-5">
+                    <Form className="ms-4">
                       <input
                         type="text"
                         placeholder="comment"
-                        className="w-75"
-                        name="comment"
+                        className="w-50"
+                        ref={inputRef}
                       />
+                      <button
+                        className="ms-2"
+                        type="button"
+                        onClick={() => comentPost(x.id)}
+                      >
+                        Submit
+                      </button>
                     </Form>
                   </div>
 
                   {likeComment
-                    .filter((z: any) => z.postId === x.id)
+                    .filter((z: any) => z.postId === x.id && z.type == "coment")
                     .map((z: any, i: any) => {
                       return (
-                        <p className="m-0" key={i}>
-                          {z?.comentobj?.comment}
+                        <p
+                          className="m-0 d-flex justify-content-between mt-1"
+                          key={i}
+                        >
+                          {z.inputValue}
+                          <IoClose onClick={() => deleteComent(x.id)} />
                         </p>
                       );
                     })}

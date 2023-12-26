@@ -8,6 +8,7 @@ import { LoginPage } from "./Componants/LoginPage";
 import OnbordingPage from "./Componants/OnbordingPage";
 import MyProfile from "./Componants/MyProfile";
 import Post from "./Componants/Post";
+import FollowingTab from "./Componants/FollowingTab";
 
 export let loginContext = createContext<{
   setLogin: Dispatch<any>;
@@ -45,6 +46,7 @@ function App() {
               </Route>
               <Route path="/post" element={<Post />} />
               <Route path="/profile" element={<MyProfile />} />
+              <Route path="/follow" element={<FollowingTab />} />
               <Route path="*" element={<Navigate to="/home" />} />
             </Routes>
           ) : (

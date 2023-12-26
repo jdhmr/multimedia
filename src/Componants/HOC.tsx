@@ -39,6 +39,9 @@ export const HOC = (Comp: FC) => {
               <NavLink to="/post">
                 <div>Post</div>
               </NavLink>
+              <NavLink to="/follow">
+                <div>Follow Tab</div>
+              </NavLink>
               <NavLink to="/profile">
                 <div className="mt-5">My profile</div>
               </NavLink>
@@ -55,7 +58,7 @@ export const HOC = (Comp: FC) => {
                 <p>
                   <span>
                     <img
-                      src={loginuser.obj?.profile}
+                      src={loginuser?.profile}
                       className="me-3"
                       style={{ width: "40px", borderRadius: "50%" }}
                     />

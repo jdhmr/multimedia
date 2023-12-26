@@ -12,7 +12,6 @@ const OnbordingPage = () => {
     tel: "",
     dob: "",
     gender: "",
-    profile: "",
     id: userId,
   });
 
@@ -23,16 +22,11 @@ const OnbordingPage = () => {
     tel: "",
     dob: "",
     gender: "",
-    profile: "",
+    
   });
 
-  const getValue = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.type == "file") {
-      setobj({ ...obj, [e.target.name]: await toBase64(e.target.files?.[0]) });
-    } else {
-      setobj({ ...obj, [e.target.name]: e.target.value });
-    }
-
+  const getValue = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setobj({ ...obj, [e.target.name]: e.target.value });
     setblank({ ...blank });
   };
 
@@ -45,7 +39,6 @@ const OnbordingPage = () => {
       tel: "",
       dob: "",
       gender: "",
-      profile: "",
     };
 
     if (!obj.userName.trim()) {
@@ -72,10 +65,6 @@ const OnbordingPage = () => {
       errMsg.gender = "Gender is required";
     }
 
-    if (!obj.profile.trim()) {
-      errMsg.profile = "Profile is required";
-    }
-
     seterrorMsg(errMsg);
 
     let len = Object.values(errMsg).filter((x) => x != "");
@@ -90,13 +79,6 @@ const OnbordingPage = () => {
     }
   };
 
-  const toBase64 = (file: any) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = reject;
-    });
 
   return (
     <>
@@ -188,24 +170,11 @@ const OnbordingPage = () => {
               checked={obj.gender == "Female"}
             />
             Female <br />
-            { <span>{errorMsg.gender}</span>}
+            {<span>{errorMsg.gender}</span>}
           </Col>
         </Form.Group>
 
-        <Form.Group as={Row} className="mb-3 mt-4">
-          <Form.Label column sm="2">
-            Profile
-          </Form.Label>
-          <Col sm="10">
-            <Form.Control type="file" name="profile" onChange={getValue} />
-            <img
-              src={obj.profile}
-              className="mt-3 me-5"
-              style={{ width: "100px", borderRadius: "50%" }}
-            />
-            {errorMsg.profile && <span>{errorMsg.profile}</span>}
-          </Col>
-        </Form.Group>
+
 
         <button
           type="button"

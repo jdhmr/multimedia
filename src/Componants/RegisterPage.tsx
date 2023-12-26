@@ -14,6 +14,7 @@ export const RegisterPage = () => {
     email: "",
     password: "",
     cpassword: "",
+    profile: "",
     id: userId,
   });
   let [blank, setblank] = useState({});
@@ -22,10 +23,15 @@ export const RegisterPage = () => {
     email: "",
     password: "",
     cpassword: "",
+    profile: "",
   });
 
-  const getValue = (e: ChangeEvent<HTMLInputElement>) => {
+  const getValue = async (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.type == "file") {
+      setobj({ ...obj, [e.target.name]: await toBase64(e.target.files?.[0]) });
+    } else {
     setobj({ ...obj, [e.target.name]: e.target.value });
+    }
     setblank({ ...blank });
   };
 
@@ -39,6 +45,7 @@ export const RegisterPage = () => {
       email: "",
       password: "",
       cpassword: "",
+      profile: "",
     };
 
     if (!obj.name.trim()) {
@@ -59,6 +66,10 @@ export const RegisterPage = () => {
       errMsg.cpassword = "Password not matched";
     }
 
+    if (!obj.profile.trim()) {
+      errMsg.profile = "Profile is required";
+    }
+
     seterrorMsg(errMsg);
     let len = Object.values(errMsg).filter((x) => x != "");
 
@@ -67,6 +78,15 @@ export const RegisterPage = () => {
       navigate("/login");
     }
   };
+
+  const toBase64 = (file: any) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+  });
+
 
   return (
     <>
@@ -130,6 +150,21 @@ export const RegisterPage = () => {
               value={obj.cpassword}
             />
             {errorMsg.cpassword && <span>{errorMsg.cpassword}</span>}
+          </Col>
+        </Form.Group>
+
+        <Form.Group as={Row} className="mb-3 mt-4">
+          <Form.Label column sm="2">
+            Profile
+          </Form.Label>
+          <Col sm="10">
+            <Form.Control type="file" name="profile" onChange={getValue} />
+            <img
+              src={obj.profile}
+              className="mt-3 me-5"
+              style={{ width: "60px", borderRadius: "50%" }}
+            />
+            {errorMsg.profile && <span>{errorMsg.profile}</span>}
           </Col>
         </Form.Group>
 

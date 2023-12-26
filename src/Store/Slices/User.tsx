@@ -63,9 +63,40 @@ const likeComment = createSlice({
   },
 });
 
+const followUnfollw = createSlice({
+  name: "followUnfollws",
+  initialState: JSON.parse(localStorage.getItem("follow") || "[]"),
+  reducers: {
+    followUser(state: any, action) {
+      const { ...followData } = action.payload;
+      state = [...state, { ...followData, type: "follow" }];
+      localStorage.setItem("follow", JSON.stringify(state));
+      return state;
+    },
+    unFollowUser(state: any, action) {
+      const followId = action.payload;
+      state = state.filter((x: any) => x.id !== followId);
+      localStorage.setItem("follow", JSON.stringify(state));
+      return state;
+    },
+    acceptUser(state: any, action) {
+      const { ...followData } = action.payload;
+      state = [...state, { ...followData, type: "accept" }];
+      localStorage.setItem("follow", JSON.stringify(state));
+      return state;
+    },
+    deleteAccept(state: any, action) {
+      const followId = action.payload;
+      state = state.filter((x: any) => x.id !== followId);
+      localStorage.setItem("follow", JSON.stringify(state));
+      return state;
+    }
+  },
+});
+
 export const { addUser, deleteUser } = Users.actions;
 export const { addPost, deletePost } = UsersPost.actions;
 export const { addLike, deleteLike, addComment, deleteComment } =
   likeComment.actions;
-
-export { Users, UsersPost, likeComment };
+export const { followUser, unFollowUser,acceptUser,deleteAccept } = followUnfollw.actions;
+export { Users, UsersPost, likeComment, followUnfollw };
