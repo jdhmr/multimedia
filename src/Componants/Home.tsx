@@ -20,7 +20,7 @@ const Home = () => {
   let findUser = userData.find((x: any) => x.id === userId);
   let posts = useSelector((state: any) => state.post);
   let likeComment = useSelector((state: any) => state.likeComment);
-
+  let followUnfollw = useSelector((state: any) => state.followUnfollw);
   const dispatch = useDispatch();
 
   const likePost = (postId: any) => {
@@ -62,75 +62,87 @@ const Home = () => {
     <>
       {findUser?.obj
         ? posts.map((x: any, i: number) => {
-            return (
-              <Card style={{ width: "21rem" }} key={i} className="mb-3 mx-auto">
-                <Card.Title>
-                  <div className="d-flex align-items-center mt-2 ms-2">
-                    <img
-                      src={x?.userImg}
-                      style={{ width: "35px", borderRadius: "50%" }}
-                    />
-                    <p className="m-0 ms-3">{x?.userName}</p>
-                  </div>
-                  <p className="m-0 mt-2 text-center card-p">{x.description}</p>
-                </Card.Title>
-                <Card.Img variant="top" src={x.postimg} />
-                <Card.Body>
-                  <div className="d-flex justify-content-between align-items-center">
-                    <div>
-                      {likeComment.find(
-                        (y: any) => y.postId === x.id && y.type == "like"
-                      ) ? (
-                        <AiFillHeart
-                          size={30}
-                          onClick={() => likePost(x?.id)}
-                        />
-                      ) : (
-                        <CiHeart size={30} onClick={() => likePost(x?.id)} />
-                      )}
-                    </div>
-
-                    <div className="ms-2">
-                      {
-                        likeComment.filter(
-                          (y: any) => y.postId === x.id && y.type == "like"
-                        ).length
-                      }
-                    </div>
-
-                    <Form className="ms-4">
-                      <input
-                        type="text"
-                        placeholder="comment"
-                        className="w-50"
-                        ref={inputRef}
+            if (userId === x.userLoninId) {
+              return (
+                <Card
+                  style={{ width: "21rem" }}
+                  key={i}
+                  className="mb-3 mx-auto"
+                >
+                  <Card.Title>
+                    <div className="d-flex align-items-center mt-2 ms-2">
+                      <img
+                        src={x?.userImg}
+                        style={{ width: "35px", borderRadius: "50%" }}
                       />
-                      <button
-                        className="ms-2"
-                        type="button"
-                        onClick={() => comentPost(x.id)}
-                      >
-                        Submit
-                      </button>
-                    </Form>
-                  </div>
+                      <p className="m-0 ms-3">{x?.userName}</p>
+                    </div>
+                    <p className="m-0 mt-2 text-center card-p">
+                      {x.description}
+                    </p>
+                  </Card.Title>
+                  <Card.Img variant="top" src={x.postimg} />
+                  <Card.Body>
+                    <div className="d-flex justify-content-between align-items-center">
+                      <div>
+                        {likeComment.find(
+                          (y: any) => y.postId === x.id && y.type == "like"
+                        ) ? (
+                          <AiFillHeart
+                            size={30}
+                            onClick={() => likePost(x?.id)}
+                          />
+                        ) : (
+                          <CiHeart size={30} onClick={() => likePost(x?.id)} />
+                        )}
+                      </div>
 
-                  {likeComment
-                    .filter((z: any) => z.postId === x.id && z.type == "coment")
-                    .map((z: any, i: any) => {
-                      return (
-                        <p
-                          className="m-0 d-flex justify-content-between mt-1"
-                          key={i}
+                      <div className="ms-2">
+                        {
+                          likeComment.filter(
+                            (y: any) => y.postId === x.id && y.type == "like"
+                          ).length
+                        }
+                      </div>
+
+                      <Form className="ms-4">
+                        <input
+                          type="text"
+                          placeholder="comment"
+                          className="w-50"
+                          ref={inputRef}
+                        />
+                        <button
+                          className="ms-2"
+                          type="button"
+                          onClick={() => comentPost(x.id)}
                         >
-                          {z.inputValue}
-                          <IoClose onClick={() => deleteComent(x.id)} />
-                        </p>
-                      );
-                    })}
-                </Card.Body>
-              </Card>
-            );
+                          Submit
+                        </button>
+                      </Form>
+                    </div>
+
+                    {likeComment
+                      .filter(
+                        (z: any) => z.postId === x.id && z.type == "coment"
+                      )
+                      .map((z: any, i: any) => {
+                        return (
+                          <p
+                            className="m-0 d-flex justify-content-between mt-1"
+                            key={i}
+                          >
+                            {z.inputValue}
+                            <IoClose onClick={() => deleteComent(x.id)} />
+                          </p>
+                        );
+                      })}
+                  </Card.Body>
+                </Card>
+              );
+            } else {
+              return null;
+            }
           })
         : userId != findUser?.obj?.id && <Outlet />}
     </>

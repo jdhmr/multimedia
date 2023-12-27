@@ -17,17 +17,15 @@ const Post = () => {
   const userId = JSON.parse(localStorage.getItem("loginuserId") as any);
   let userData = JSON.parse(localStorage.getItem("user") as string);
   let findUser = userData.find((x: any) => x.id === userId);
-
-  let state = useSelector((state: any) => state.post);
   const dispatch = useDispatch();
   let postId = uuid4();
-   // let date = new Date();
+
   const [postobj, setpostobj] = useState({
     postimg: "",
     description: "",
     id: postId,
     userLoninId: userId,
-    userImg: findUser?.obj?.profile,
+    userImg: findUser?.profile,
     userName: findUser?.name,
   });
   let [errorMsg, seterrorMsg] = useState({
@@ -65,7 +63,7 @@ const Post = () => {
         description: "",
         id: postId,
         userLoninId: userId,
-        userImg: findUser.obj.profile,
+        userImg: findUser.profile,
         userName: findUser.name,
       });
     }

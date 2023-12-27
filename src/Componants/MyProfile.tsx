@@ -7,7 +7,7 @@ import { loginContext } from "../App";
 
 const MyProfile = () => {
   const dispatch = useDispatch();
-  let state = useSelector((state: any) => state.post);
+  let posts = useSelector((state: any) => state.post);
   const [loginuser, setLoginuser] = useState<any>({});
   const userId = JSON.parse(localStorage.getItem("loginuserId") as any);
   let userData = JSON.parse(localStorage.getItem("user") as string);
@@ -182,7 +182,7 @@ const MyProfile = () => {
         </Card.Body>
       </Card>
 
-      {state.map((x: any, i: number) => {
+      {posts.map((x: any, i: number) => {
         if (userId === x.userLoninId) {
           return (
             <Card style={{ width: "21rem" }} className="mt-5 mx-auto">

@@ -10,11 +10,11 @@ import {
 import { v4 } from "uuid";
 
 const FollowingTab = () => {
-  const [flength, setflength] = useState<any>(0);
   const userId = JSON.parse(localStorage.getItem("loginuserId") as any);
   let allUsers = useSelector((state: any) => state.user);
   let followUnfollw = useSelector((state: any) => state.followUnfollw);
   const dispatch = useDispatch();
+
   const followRequest = (rechivId: any) => {
     let follow = followUnfollw?.find(
       (x: any) =>
@@ -38,15 +38,12 @@ const FollowingTab = () => {
     if (follow) dispatch(unFollowUser(follow.id));
   };
 
-  let hideButton = useRef<any>();
   const acceptRequest = (rechivId: any) => {
     let follow = followUnfollw?.find(
       (x: any) =>
         x.type === "accept" && x.senderId === userId && x.rechivId === rechivId
     );
     if (!follow) dispatch(acceptUser({ id: v4(), rechivId, userId }));
-
-    hideButton.current.style.display = "none";
   };
 
   const deleteRequest = (rechivId: any) => {
@@ -59,12 +56,9 @@ const FollowingTab = () => {
 
   const deleteFollow = () => {
     let follow = followUnfollw?.find(
-      (x: any) =>
-        x.type === "accept" && x.userId === userId 
+      (x: any) => x.type === "accept" && x.rechivId === userId
     );
     if (follow) dispatch(deleteAccept(follow.id));
-    console.log(follow);
-    
   };
 
   return (
@@ -89,7 +83,10 @@ const FollowingTab = () => {
                     <button
                       type="button"
                       className="btn btn-secondary"
-                      onClick={() => unfollowRequest(x.id)}
+                      onClick={() => {
+                        unfollowRequest(x.id);
+                        deleteFollow();
+                      }}
                     >
                       Requested
                     </button>
@@ -103,16 +100,25 @@ const FollowingTab = () => {
                     </button>
                   )}
 
-                  <button
-                    className="btn btn-info ms-1"
-                    onClick={() => {
-                      unfollowRequest(x.id);
-                      deleteFollow();
-                    }}
-                  >
-                    Unfollow
-                  </button>
+                  {/* {followUnfollw.find(
+                    (y: any) =>
+                      y.id &&
+                      y.rechivId === userId &&
+                      y.userId === x.id &&
+                      y.type === "accept"
+                  ) ? (
+                    <button
+                      className="btn btn-info ms-1"
+                      onClick={() => {
+                        unfollowRequest(x.id);
+                        deleteFollow();
+                      }}
+                    >
+                      Unfollow
+                    </button>
+                  ) : null} */}
                 </div>
+
                 <div className="w-25 d-flex justify-content-between align-items-center border border-2 p-2 rounded-2 me-4 mb-2">
                   {followUnfollw
                     .filter(
@@ -160,14 +166,27 @@ const FollowingTab = () => {
                             </button>
                           )}
 
-                          <button
-                            type="button"
-                            className="btn btn-warning"
-                            onClick={() => rejectRequest()}
-                            ref={hideButton}
-                          >
-                            reject
-                          </button>
+                          {followUnfollw.find(
+                            (y: any) =>
+                              y.id && y.userId === userId && y.rechivId === x.id  && y.type === "accept"
+                          ) ? (
+                            // <button
+                            //   type="button"
+                            //   className="btn btn-info"
+                            //   onClick={() => followRequest(x.id)}
+                            // >
+                            //   FollowBack
+                            // </button>
+                            null
+                          ) : (
+                            <button
+                              type="button"
+                              className="btn btn-warning"
+                              onClick={() => rejectRequest()}
+                            >
+                              reject
+                            </button>
+                          )}
                         </div>
                       );
                     })}
