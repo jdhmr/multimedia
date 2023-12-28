@@ -58,11 +58,22 @@ const Home = () => {
     if (comment) dispatch(deleteComment(comment.id));
   };
 
+  let followPost = posts.map((item: any) => {
+    let f = followUnfollw.find(
+      (list: any) => item.userLoninId === list.rechivId  && list.type === "accept"
+    );
+
+    if (f) {
+      return item;
+    }
+  }) ;
+  followPost = followPost.filter((a:any) => a != undefined)
+
   return (
     <>
       {findUser?.obj
-        ? posts.map((x: any, i: number) => {
-            if (userId === x.userLoninId) {
+        ? followPost.map((x: any, i: number) => {
+            // if (userId === x.userLoninId) {
               return (
                 <Card
                   style={{ width: "21rem" }}
@@ -140,9 +151,9 @@ const Home = () => {
                   </Card.Body>
                 </Card>
               );
-            } else {
-              return null;
-            }
+            // } else {
+            //   return null;
+            // }
           })
         : userId != findUser?.obj?.id && <Outlet />}
     </>
